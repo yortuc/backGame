@@ -1,8 +1,10 @@
 import { CELL_SIZE, GAME_HEIGHT, GAME_WIDTH } from './constants.js'
 
 export const clearScreen = (c) => {
+    c.save()
     c.fillStyle = 'rgba(255, 255, 255, 0.2)'
     c.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT)
+    c.restore()
 }
 
 export const drawCircle = (c, j, i, r=9) => {
