@@ -26,7 +26,7 @@ export function findPath(world, pathStart, pathEnd)
 
 	// which heuristic should we use?
 	// default: no diagonals (Manhattan)
-	var distanceFunction = ManhattanDistance;
+	var distanceFunction = EuclideanDistance;
 	var findNeighbours = function(){}; // empty
 
 	/*
@@ -57,6 +57,18 @@ export function findPath(world, pathStart, pathEnd)
 	function ManhattanDistance(Point, Goal)
 	{	// linear movement - no diagonals - just cardinal directions (NSEW)
 		return abs(Point.x - Goal.x) + abs(Point.y - Goal.y);
+	}
+
+	function EuclideanDistance(Point, Goal)
+	{	// diagonals are considered a little farther than cardinal directions
+		// diagonal movement using Euclide (AC = sqrt(AB^2 + BC^2))
+		// where AB = x2 - x1 and BC = y2 - y1 and AC will be [x3, y3]
+		return sqrt(pow(Point.x - Goal.x, 2) + pow(Point.y - Goal.y, 2));
+	}
+
+	function DiagonalDistance(Point, Goal)
+	{	// diagonal movement - assumes diag dist is 1, same as cardinals
+		return max(abs(Point.x - Goal.x), abs(Point.y - Goal.y));
 	}
 
 	// Neighbours functions, used by findNeighbours function

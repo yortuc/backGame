@@ -138,7 +138,8 @@ const drawPathways = (paths) => {
   paths.forEach((path, index) => {
     c.save()
     c.strokeStyle = colors[index % colors.length]
-    for(let i=0; i<path.length-1; i++){
+    
+    for(let i=1; i<path.length-1; i++){
       let [y1, x1] = path[i]
       let [y2, x2] = path[i+1]
 
