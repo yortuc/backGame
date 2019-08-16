@@ -1,10 +1,9 @@
-import { CELL_SIZE } from './constants.js'
+import { CELL_SIZE, ENEMY_CELLS, PLAYER_CONTAINER_CELLS } from './constants.js'
 
 import { map1, map2 } from './maps.js'
-
-import { clearScreen, drawCircle, drawSpiral } from './graphics.js'
-
+import { clearScreen, drawSpiral } from './graphics.js'
 import { tryMovePlayer } from './player.js'
+import { findPath } from './pathFinding.js'
 
 const c = document.getElementById("c").getContext("2d")
 
@@ -15,6 +14,8 @@ let currentMap = maps[0]
 
 let startTime = null
 let elapsedTime = 0
+
+let pathWays = [[]]
 
 const renderGame = (m, dt) => {
   c.save()
@@ -27,6 +28,9 @@ const renderGame = (m, dt) => {
       renderCell(j, i, m[j][i])
     }
   }
+
+  drawPathways(pathWays)
+
   c.restore()
 }
 
@@ -100,6 +104,60 @@ const renderCell = (j, i, id) => {
   c.restore()
 }
 
+const drawPathways = (paths) => {
+  paths.forEach((path) => {
+    c.save()
+    c.strokeStyle = "red"
+    for(let i=0; i<path.length-1; i++){
+      let [y1, x1] = path[i]
+      let [y2, x2] = path[i+1]
+
+      c.moveTo(x1 * CELL_SIZE + CELL_SIZE/2, y1 * CELL_SIZE + CELL_SIZE/2)
+      c.lineTo(x2 * CELL_SIZE + CELL_SIZE/2, y2 * CELL_SIZE + CELL_SIZE/2)
+      c.stroke()
+    }
+    c.strokeStyle = "black"
+    c.restore()
+  })
+}
+ 
+const enemyPositionsFromMap = (map) => {
+  let enemies = []
+  for(let j=0; j<map.length; j++){
+    for(let i=0; i<map[0].length; i++){
+      if(ENEMY_CELLS.includes(map[j][i])){
+        enemies.push({y: j, x:i, id: map[j][i]})
+      }
+    }
+  }
+  return enemies
+}
+
+const playerPosFromMap = (map) => {
+  for(let j=0; j<map.length; j++){
+    for(let i=0; i<map[0].length; i++){
+      if(PLAYER_CONTAINER_CELLS.includes(map[j][i])){
+        return {y: j, x:i, id: map[j][i]}
+      }
+    }
+  }
+}
+
+const moveEnemies = (map) => {
+  const enemies = enemyPositionsFromMap(map)
+  const playerPos = playerPosFromMap(map)
+
+  let paths = []
+
+  enemies.forEach((enemy)=> {
+    const path = findPath(map, [enemy.y, enemy.x], [playerPos.y, playerPos.x])
+    console.log(path)
+    paths.push(path)
+  })
+
+  pathWays = paths
+}
+
 document.addEventListener('keydown', function checkKey(e) {
   let move
   if(event.keyCode === 37) move = {x: -1} // left
@@ -108,6 +166,9 @@ document.addEventListener('keydown', function checkKey(e) {
   if(event.keyCode === 38) move = {y: -1} // up
   
   tryMovePlayer(currentMap, move, function playerMoved(currentCellId, targetCellId) {
+      
+      moveEnemies(currentMap)
+    
       if(targetCellId === 3){ // change map, on portal
         setTimeout(function(){ 
           mapIndex += 1

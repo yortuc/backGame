@@ -15,6 +15,12 @@ export const PLAYER_MOVABLE_CELLS = [
 export const PLAYER_CONTAINER_CELLS = [
   2, 5
 ]
+export const ENEMY_CELLS = [
+  6
+]
+export const ENEMT_MOVABLE_CELLS = [
+  0, 2, 3
+]
 
 // cell transitions
 export const PLAYER_MOVE_CELL_TRANSITIONS = {
