@@ -14,7 +14,7 @@ export const renderGame = (c, m, dt, elapsedTime, pathWays, score) => {
   }
 
   drawPathways(c, pathWays)
-  drawHud(c, score)
+  // drawHud(c, score)
 
   c.restore()
 }

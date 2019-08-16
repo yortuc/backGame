@@ -1,8 +1,11 @@
 import { 
-    PLAYER_MOVABLE_CELLS, 
-    PLAYER_MOVE_CELL_TRANSITIONS,
-    PLAYER_CONTAINER_CELLS 
+  ENEMY_CELLS,
+  PLAYER_MOVABLE_CELLS, 
+  PLAYER_MOVE_CELL_TRANSITIONS,
+  PLAYER_CONTAINER_CELLS 
 } from './constants.js'
+
+import { findPath } from './pathFinding.js'
 
 export const tryMovePlayer = (map, move, playerMovedCallback) => {
     const {x, y} = getPlayerPosFromMap(map)
@@ -42,4 +45,37 @@ export const getPlayerPosFromMap = (map) => {
     }
   }
   
-   
+export const enemyPositionsFromMap = (map) => {
+  let enemies = []
+  for(let j=0; j<map.length; j++){
+    for(let i=0; i<map[0].length; i++){
+      if(ENEMY_CELLS.includes(map[j][i])){
+        enemies.push({y: j, x:i, id: map[j][i]})
+      }
+    }
+  }
+  return enemies
+}
+
+export const moveEnemies = (map) => {
+  const enemies = enemyPositionsFromMap(map)
+  const playerPos = getPlayerPosFromMap(map)
+
+  let paths = []
+
+  enemies.forEach((enemy)=> {
+    const path = findPath(map, [enemy.y, enemy.x], [playerPos.y, playerPos.x])
+    console.log(path)
+    
+    if(path.length>0){
+      paths.push(path)
+
+      // MOVE ENEMY HARDCODED
+      const [enemyNextPosY, enemyNextPostX] = path[1]
+      map[enemyNextPosY][enemyNextPostX] = 6
+      map[enemy.y][enemy.x] = 0
+    }
+  })
+
+  return paths
+}
