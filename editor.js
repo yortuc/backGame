@@ -1,8 +1,6 @@
 import { CELL_SIZE } from './constants.js'
-
 import { renderGame } from './mapRenderer.js'
-//   import { tryMovePlayer } from './player.js'
-//   import { findPath } from './pathFinding.js'
+import { tryMovePlayer, moveEnemies } from './player.js'
   
 const canvas = document.getElementById("c")
 const p = document.getElementById("p")
@@ -18,11 +16,13 @@ let currentMap = [
     [0, 0, 0, 0, 0, 0, 0, 0,],
     [0, 0, 0, 0, 0, 0, 0, 0,],
 ]
+
 let startTime = null
 let elapsedTime = 0
 let pathWays = [[]]
+let isPlaying = false
 
-let currentCellType = 0
+let currentCellType = 1
   
 function step(timestamp) {
     elapsedTime = timestamp
@@ -36,20 +36,33 @@ function step(timestamp) {
     window.requestAnimationFrame(step)
 }
   
-window.requestAnimationFrame(step)
-  
 document.addEventListener('keydown', function checkKey(e) {
     const code = e.keyCode
+
+    if(code === 80) {
+        resetTool()
+        if(isPlaying) {  // key: p
+            stopPlay()
+        } else {
+            startPlay()
+        }
+    }
     if(code === 53 || code < 48 || code > 57) return
     
     currentCellType = e.keyCode - 48
-    console.log(currentCellType)
+    resetTool()
+    selectCurrentCellType()
+})
 
-    for (let item of document.getElementsByTagName("button")) {
+const resetTool = () => {
+    for (let item of document.getElementsByTagName("span")) {
         item.classList.remove("selected")
     }
+}
+
+const selectCurrentCellType = () => {
     document.getElementById("b" + currentCellType.toString()).classList.add("selected")
-})
+}
 
 canvas.addEventListener('click', function(e) {
     const pos = getPosition(e)
@@ -60,6 +73,7 @@ canvas.addEventListener('click', function(e) {
     console.log("CELL:", y, x)
 
     updateMap(y, x, currentCellType)
+    p.innerHTML = mapToHtml(currentMap)
 })
 
 const getPosition = (event) => {
@@ -72,7 +86,6 @@ const getPosition = (event) => {
 
 const updateMap = (y, x, val) => {
     currentMap[y][x] = val
-    p.innerHTML = mapToHtml(currentMap)
 }
 
 const mapToHtml= (map) => {
@@ -80,9 +93,46 @@ const mapToHtml= (map) => {
     for(let j=0; j<map.length; j++){
         let row = ""
         for(let i=0; i<map.length; i++){
-            row = row + "," + map[j][i]
+            row = row + map[j][i] + ","
         }
         ret = ret + "</br>" + row
     }
     return ret
 }
+
+const startPlay = () => {
+    isPlaying = true
+    document.getElementById("play").classList.add("selected")
+}
+
+const stopPlay = () => {
+    isPlaying = false
+    document.getElementById("play").classList.remove("selected")
+}
+
+document.addEventListener('keydown', function checkKey(e) {
+    let move = null
+    if(event.keyCode === 37) move = {x: -1} // left
+    if(event.keyCode === 39) move = {x: 1}  // right
+    if(event.keyCode === 40) move = {y: 1}  // down
+    if(event.keyCode === 38) move = {y: -1} // up
+
+    if(!move) return
+
+    tryMovePlayer(currentMap, move, (currentCellId, targetCellId) => {
+        
+        if(isPlaying){
+            pathWays = moveEnemies(currentMap)
+        }
+
+        // if(targetCellId === PORTAL){ // moved on portal -> change the currentMap
+        //     setTimeout(function(){ 
+        //     mapIndex += 1
+        //     currentMap = maps[mapIndex]
+        //     }, 500);
+        // }
+    })
+})
+
+p.innerHTML = mapToHtml(currentMap)
+window.requestAnimationFrame(step)
