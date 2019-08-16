@@ -29,7 +29,7 @@ const renderGame = (m, dt) => {
     }
   }
 
-  drawPathways(pathWays)
+  // drawPathways(pathWays)
 
   c.restore()
 }
@@ -105,9 +105,9 @@ const renderCell = (j, i, id) => {
 }
 
 const drawPathways = (paths) => {
-  paths.forEach((path) => {
-    c.save()
-    c.strokeStyle = "red"
+  const colors = ["red", "blue", "green", "orange"]
+  paths.forEach((path, index) => {
+    c.strokeStyle = colors[index % colors.length]
     for(let i=0; i<path.length-1; i++){
       let [y1, x1] = path[i]
       let [y2, x2] = path[i+1]
@@ -116,8 +116,6 @@ const drawPathways = (paths) => {
       c.lineTo(x2 * CELL_SIZE + CELL_SIZE/2, y2 * CELL_SIZE + CELL_SIZE/2)
       c.stroke()
     }
-    c.strokeStyle = "black"
-    c.restore()
   })
 }
  
@@ -152,7 +150,14 @@ const moveEnemies = (map) => {
   enemies.forEach((enemy)=> {
     const path = findPath(map, [enemy.y, enemy.x], [playerPos.y, playerPos.x])
     console.log(path)
-    paths.push(path)
+    
+    if(path.length>0){
+      paths.push(path)
+
+      const [_y, _x] = path[1]
+      map[_y][_x] = 6
+      map[enemy.y][enemy.x] = 0  
+    }
   })
 
   pathWays = paths
