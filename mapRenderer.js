@@ -1,4 +1,15 @@
-import { CELL_SIZE } from './constants.js'
+import { 
+  CELL_SIZE, 
+  EMPTY_CELL, 
+  WALL, 
+  PLAYER_ON_EMPTY_CELL, 
+  PORTAL, 
+  PLAYER_ON_PORTAL, 
+  ENEMY_ANT,
+  LAKE, 
+  BOAT_ON_LAKE,
+  PLAYER_ON_BOAT
+} from './constants.js'
 import { clearScreen, drawSpiral } from './graphics.js'
 
 export const renderGame = (c, m, dt, elapsedTime, pathWays, score) => {
@@ -28,6 +39,10 @@ const drawHud = (c, score) => {
 }
 
 const createTileRect = (j,i) => [i * CELL_SIZE, j * CELL_SIZE, CELL_SIZE, CELL_SIZE]
+
+const contractTileRect = (rct, pixels) => [
+  rct[0] + pixels, rct[1] + pixels, CELL_SIZE - 2*pixels, CELL_SIZE - 2*pixels
+]
 
 const drawEmptyCell = (c, j, i) => {
   c.fillStyle = "white"
@@ -75,31 +90,56 @@ const drawPortal = (c, j, i, elapsedTime) => {
   drawSpiral(c, j, i, 0, -index)
 }
 
+const drawLake = (c, j, i, elapsedTime) => {
+  const rct = createTileRect(j, i)
+  c.fillStyle = "#2196F3"
+  c.fillRect(...rct)
+}
+
+const drawBoat = (c, j, i) => {
+  const rct = contractTileRect(createTileRect(j, i), 3)
+  c.fillStyle = "#795548"
+  c.fillRect(...rct)
+}
+
 const renderCell = (c, j, i, id, elapsedTime) => {
   c.save()
   switch(id) {
-    case 0:
+    case EMPTY_CELL:
       drawEmptyCell(c, j, i)
       break
-   case 1:
+    case WALL:
       drawWall(c, j, i)
       break
-   case 2:
-     drawEmptyCell(c, j, i)
-     drawPlayer(c, j, i)
-     break
-  case 3:
-     drawEmptyCell(c, j, i)
-     drawPortal(c, j, i, elapsedTime)
-     break
-  case 5:
-     drawEmptyCell(c, j, i)     
-     drawPlayer(c, j, i)
-     drawPortal(c, j, i, elapsedTime)
-     break
-  case 6:
+    case PLAYER_ON_EMPTY_CELL:
+      drawEmptyCell(c, j, i)
+      drawPlayer(c, j, i)
+      break
+    case PORTAL:
+      drawEmptyCell(c, j, i)
+      drawPortal(c, j, i, elapsedTime)
+      break
+    case PLAYER_ON_PORTAL:
+      drawEmptyCell(c, j, i)     
+      drawPlayer(c, j, i)
+      drawPortal(c, j, i, elapsedTime)
+      break
+    case ENEMY_ANT:
       drawEmptyCell(c, j,i)
       drawAnt(c, j, i, elapsedTime)
+      break
+    case LAKE:
+      drawLake(c, j, i, elapsedTime)
+      break
+    case BOAT_ON_LAKE:
+      drawLake(c, j, i, elapsedTime)
+      drawBoat(c, j, i)
+      break
+    case PLAYER_ON_BOAT:
+      drawLake(c, j, i, elapsedTime)
+      drawBoat(c, j, i)
+      drawPlayer(c, j, i)
+      break
   }
   c.restore()
 }

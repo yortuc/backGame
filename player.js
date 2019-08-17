@@ -1,6 +1,6 @@
 import { 
   ENEMY_CELLS,
-  PLAYER_MOVABLE_CELLS, 
+  MOVABLE_CELLS, 
   PLAYER_MOVE_CELL_TRANSITIONS,
   PLAYER_CONTAINER_CELLS 
 } from './constants.js'
@@ -8,13 +8,15 @@ import {
 import { findPath } from './pathFinding.js'
 
 export const tryMovePlayer = (map, move, playerMovedCallback) => {
-    const {x, y} = getPlayerPosFromMap(map)
+    const {x, y, id} = getPlayerPosFromMap(map)
     
     if(move.x){
         const _x = x + move.x
-        if(_x >= 0 && _x < map[0].length && PLAYER_MOVABLE_CELLS.includes(map[y][_x])){
+        const targetCellId = map[y][_x]
+        if(_x >= 0 && _x < map[0].length && 
+           MOVABLE_CELLS[id].includes(targetCellId))
+        {
           const currentCellId = map[y][x]
-          const targetCellId = map[y][_x]
           map[y][_x] = PLAYER_MOVE_CELL_TRANSITIONS[targetCellId]
           map[y][x] = PLAYER_MOVE_CELL_TRANSITIONS[currentCellId]
           playerMovedCallback(currentCellId, targetCellId)
@@ -23,7 +25,9 @@ export const tryMovePlayer = (map, move, playerMovedCallback) => {
     
     if(move.y){
         const _y = y + move.y
-        if(_y >= 0 && _y < map.length && PLAYER_MOVABLE_CELLS.includes(map[_y][x])){
+        if(_y >= 0 && _y < map.length && 
+           MOVABLE_CELLS[id].includes(map[_y][x]))
+        {
           const currentCellId = map[y][x]
           const targetCellId = map[_y][x]
           map[_y][x] = PLAYER_MOVE_CELL_TRANSITIONS[targetCellId]
