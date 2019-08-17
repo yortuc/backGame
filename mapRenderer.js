@@ -52,7 +52,7 @@ const drawAnt = (c, j, i, elapsedTime) => {
   const index = Math.floor(elapsedTime / 100)
   //   console.log(index)
   const colors = ["orange"]
-  
+
   c.fillStyle = 'black'
   c.beginPath();
   c.arc(i*CELL_SIZE + CELL_SIZE/2, j*CELL_SIZE + CELL_SIZE/2, CELL_SIZE/6, 0, 2 * Math.PI);

@@ -95,7 +95,7 @@ const mapToHtml= (map) => {
         for(let i=0; i<map.length; i++){
             row = row + map[j][i] + ","
         }
-        ret = ret + "</br>" + row
+        ret = ret + "[" + row + "]," + "</br>"
     }
     return ret
 }
