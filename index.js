@@ -7,7 +7,7 @@ const c = document.getElementById("c").getContext("2d")
 
 const maps = [map1, map2]
 let mapIndex = 0
-let currentMap = maps[1]
+let currentMap = maps[0]
 
 let startTime = null
 let elapsedTime = 0
@@ -27,10 +27,10 @@ document.addEventListener('keydown', function checkKey(e) {
       pathWays = moveEnemies(currentMap)
     
       if(targetCellId === PORTAL){ // moved on portal -> change the currentMap
-        // setTimeout(function(){ 
-        //   mapIndex += 1
-        //   currentMap = maps[mapIndex]
-        // }, 500);
+        setTimeout(function(){ 
+          mapIndex += 1
+          currentMap = maps[mapIndex]
+        }, 500);
       }
   })
 })
