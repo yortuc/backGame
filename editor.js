@@ -16,6 +16,7 @@ let currentMap = [
     [0, 0, 0, 0, 0, 0, 0, 0,],
     [0, 0, 0, 0, 0, 0, 0, 0,],
 ]
+let cachedMap = null
 
 let startTime = null
 let elapsedTime = 0
@@ -102,11 +103,14 @@ const mapToHtml= (map) => {
 
 const startPlay = () => {
     isPlaying = true
+    cachedMap = currentMap.map(r => r.map(c => c))
     document.getElementById("play").classList.add("selected")
 }
 
 const stopPlay = () => {
     isPlaying = false
+    currentMap = cachedMap
+    cachedMap = null
     document.getElementById("play").classList.remove("selected")
 }
 
