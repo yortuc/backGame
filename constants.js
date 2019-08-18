@@ -16,7 +16,8 @@ export const PLAYER_ON_BOAT = 10
 
 export const MOVABLE_CELLS = {
   2 : [EMPTY_CELL, PORTAL, BOAT_ON_LAKE],
-  10: [LAKE, EMPTY_CELL]
+  10: [LAKE, EMPTY_CELL],
+  5 : [EMPTY_CELL]
 }
 
 export const PLAYER_CONTAINER_CELLS = [
@@ -41,10 +42,10 @@ export const ENEMT_MOVABLE_CELLS = [
 // 
 
 export const MOVE_CELL_TRANSITIONS = {
-  2 : { 0: 2, 9: 10 },
-  0 : { 2: 0, 10: 9 },
-  3 : { 3: 5 },
-  5 : { 5: 3 },
+  2 : { 0: 2, 9: 10, 3: 5 },
+  0 : { 2: 0, 10: 9, 5: 3 },
+  3 : { 5: 3, 2: 0 },
+  5 : { 0: 2 },
   9 : { 9: 10, 2: 0 },
   10 : { 10: 8, 8 : 10, 0: 2 },
   8 : { 10: 8 }
