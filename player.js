@@ -1,7 +1,7 @@
 import { 
   ENEMY_CELLS,
   MOVABLE_CELLS, 
-  PLAYER_MOVE_CELL_TRANSITIONS,
+  MOVE_CELL_TRANSITIONS,
   PLAYER_CONTAINER_CELLS 
 } from './constants.js'
 
@@ -17,8 +17,8 @@ export const tryMovePlayer = (map, move, playerMovedCallback) => {
            MOVABLE_CELLS[id].includes(targetCellId))
         {
           const currentCellId = map[y][x]
-          map[y][_x] = PLAYER_MOVE_CELL_TRANSITIONS[targetCellId]
-          map[y][x] = PLAYER_MOVE_CELL_TRANSITIONS[currentCellId]
+          map[y][_x] = MOVE_CELL_TRANSITIONS[currentCellId][targetCellId]
+          map[y][x] = MOVE_CELL_TRANSITIONS[targetCellId][currentCellId]
           playerMovedCallback(currentCellId, targetCellId)
         }
     }
@@ -30,8 +30,8 @@ export const tryMovePlayer = (map, move, playerMovedCallback) => {
         {
           const currentCellId = map[y][x]
           const targetCellId = map[_y][x]
-          map[_y][x] = PLAYER_MOVE_CELL_TRANSITIONS[targetCellId]
-          map[y][x] = PLAYER_MOVE_CELL_TRANSITIONS[currentCellId]
+          map[_y][x] = MOVE_CELL_TRANSITIONS[currentCellId][targetCellId]
+          map[y][x] = MOVE_CELL_TRANSITIONS[targetCellId][currentCellId]
           playerMovedCallback(currentCellId, targetCellId)
         }
     }

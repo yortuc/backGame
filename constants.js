@@ -16,7 +16,7 @@ export const PLAYER_ON_BOAT = 10
 
 export const MOVABLE_CELLS = {
   2 : [EMPTY_CELL, PORTAL, BOAT_ON_LAKE],
-  10: [LAKE]
+  10: [LAKE, EMPTY_CELL]
 }
 
 export const PLAYER_CONTAINER_CELLS = [
@@ -32,15 +32,33 @@ export const ENEMT_MOVABLE_CELLS = [
 ]
 
 // cell transitions
-export const PLAYER_MOVE_CELL_TRANSITIONS = {
-   2 : 0,  // empty cell with player -> empty player
-   0 : 2,  // empty cell -> empty cell with player on it
-   3 : 5,  // portal -> portal with player on it
-   5 : 3,  // portal with player -> portal
-   9 : 10, // boat -> player on boat
-  10 : 8,  // player on boat -> boat,
-   8 : 10
+// sourceCellId, targetCellId
+//
+// {
+//   2: { 0:  }
+// }
+// 
+// 
+
+export const MOVE_CELL_TRANSITIONS = {
+  2 : { 0: 2, 9: 10 },
+  0 : { 2: 0, 10: 9 },
+  3 : { 3: 5 },
+  5 : { 5: 3 },
+  9 : { 9: 10, 2: 0 },
+  10 : { 10: 8, 8 : 10, 0: 2 },
+  8 : { 10: 8 }
 }
+
+// export const PLAYER_MOVE_CELL_TRANSITIONS = {
+//    2 : 0,  // empty cell with player -> empty cell
+//    0 : 2,  // empty cell -> empty cell with player on it
+//    3 : 5,  // portal -> portal with player on it
+//    5 : 3,  // portal with player -> portal
+//    9 : 10, // boat -> player on boat
+//   10 : 8,  // player on boat -> boat, 
+//    8 : 10  // lake -> player on boat
+// }
 
 export const ENEMY_ANT_MOVE_CELL_TRANSITIONS = {
   // 
