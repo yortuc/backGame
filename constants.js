@@ -29,17 +29,8 @@ export const ENEMY_CELLS = [
 ]
 
 export const ENEMT_MOVABLE_CELLS = [
-  EMPTY_CELL, PLAYER_ON_EMPTY_CELL, PORTAL
+  EMPTY_CELL, PLAYER_ON_EMPTY_CELL
 ]
-
-// cell transitions
-// sourceCellId, targetCellId
-//
-// {
-//   2: { 0:  }
-// }
-// 
-// 
 
 export const MOVE_CELL_TRANSITIONS = {
   2 : { 0: 2, 9: 10, 3: 5 },   

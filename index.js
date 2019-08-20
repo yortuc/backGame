@@ -1,11 +1,10 @@
 import { PORTAL } from './constants.js'
-import { map1, map2 } from './maps.js'
+import { maps } from './maps.js'
 import { renderGame } from './mapRenderer.js'
 import { tryMovePlayer, moveEnemies } from './player.js'
 
-const c = document.getElementById("c").getContext("2d")
+const c =  document.getElementById("c").getContext("2d")
 
-const maps = [map1, map2]
 let mapIndex = 0
 let currentMap = maps[0]
 

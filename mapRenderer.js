@@ -24,7 +24,7 @@ export const renderGame = (c, m, dt, elapsedTime, pathWays, score) => {
     }
   }
 
-  drawPathways(c, pathWays)
+  // drawPathways(c, pathWays)
   // drawHud(c, score)
 
   c.restore()
@@ -32,9 +32,9 @@ export const renderGame = (c, m, dt, elapsedTime, pathWays, score) => {
 
 const drawHud = (c, score) => {
     c.save()
-    c.fillColor = "red"
+    c.fillColor = "black"
     c.font = '20px serif'
-    c.fillText("Health: 100 %", 0, 0)
+    c.fillText("Health: 100 %", 400, 50)
     c.restore()
 }
 
