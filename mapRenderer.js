@@ -58,9 +58,10 @@ const drawWall = (c, j, i) => {
 
 const drawPlayer = (c, j, i) => {
   c.fillStyle = 'red'
-  c.beginPath();
+  c.beginPath()
   c.arc(i*CELL_SIZE + CELL_SIZE/2, j*CELL_SIZE + CELL_SIZE/2, CELL_SIZE/2.5, 0, 2 * Math.PI);
-  c.fill();
+  c.closePath()
+  c.fill()
 }
 
 const drawAnt = (c, j, i, elapsedTime) => {
@@ -71,14 +72,19 @@ const drawAnt = (c, j, i, elapsedTime) => {
   c.fillStyle = 'black'
   c.beginPath();
   c.arc(i*CELL_SIZE + CELL_SIZE/2, j*CELL_SIZE + CELL_SIZE/2, CELL_SIZE/6, 0, 2 * Math.PI);
+  c.closePath()
   c.fill();
-
+  
+  c.beginPath()
   c.moveTo(i*CELL_SIZE, j*CELL_SIZE + CELL_SIZE/2)
   c.lineTo(i*CELL_SIZE + CELL_SIZE, j*CELL_SIZE + CELL_SIZE/2)
+  c.closePath()
   c.stroke()
   
+  c.beginPath()
   c.moveTo(i*CELL_SIZE + CELL_SIZE/2, j*CELL_SIZE)
   c.lineTo(i*CELL_SIZE + CELL_SIZE/2, j*CELL_SIZE + CELL_SIZE)
+  c.closePath()
   c.stroke()
 }
 
@@ -148,17 +154,17 @@ const drawPathways = (c, paths) => {
   const colors = ["red", "blue", "green", "orange"]
 
   paths.forEach((path, index) => {
-    c.save()
     c.strokeStyle = colors[index % colors.length]
     
     for(let i=1; i<path.length-1; i++){
       let [y1, x1] = path[i]
       let [y2, x2] = path[i+1]
 
+      c.beginPath()
       c.moveTo(x1 * CELL_SIZE + CELL_SIZE/2, y1 * CELL_SIZE + CELL_SIZE/2)
       c.lineTo(x2 * CELL_SIZE + CELL_SIZE/2, y2 * CELL_SIZE + CELL_SIZE/2)
+      c.closePath()
       c.stroke()
     }
-    c.restore()
   })
 }
