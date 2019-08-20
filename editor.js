@@ -111,10 +111,13 @@ const stopPlay = () => {
     isPlaying = false
     currentMap = cachedMap
     cachedMap = null
+    pathWays = [[]]
     document.getElementById("play").classList.remove("selected")
 }
 
 document.addEventListener('keydown', function checkKey(e) {
+    if(!isPlaying) return
+    
     let move = null
     if(event.keyCode === 37) move = {x: -1} // left
     if(event.keyCode === 39) move = {x: 1}  // right
