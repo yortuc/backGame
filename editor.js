@@ -48,6 +48,20 @@ document.addEventListener('keydown', function checkKey(e) {
             startPlay()
         }
     }
+    if(code === 77){ // m
+        const mapSize = prompt("SIZE of")
+        const newMap = []
+        if(mapSize){
+            for(let i=0; i<mapSize; i++){
+                let row = []
+                for(let j=0; j<mapSize; j++){
+                    row.push(0)
+                }
+                newMap.push(row)
+            }
+            currentMap = newMap
+        }
+    }
     if(code === 53 || code < 48 || code > 57) return
     
     currentCellType = e.keyCode - 48
