@@ -69,7 +69,6 @@ export const moveEnemies = (map) => {
 
   enemies.forEach((enemy)=> {
     const path = findPath(map, [enemy.y, enemy.x], [playerPos.y, playerPos.x])
-    console.log(path)
     
     if(path.length>0){
       paths.push(path)

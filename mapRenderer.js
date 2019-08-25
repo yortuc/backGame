@@ -11,10 +11,11 @@ import {
   PLAYER_ON_BOAT
 } from './constants.js'
 import { clearScreen, drawSpiral } from './graphics.js'
+import { getPlayerPosFromMap } from './player.js';
 
 export const renderGame = (c, m, dt, elapsedTime, pathWays, score) => {
   c.save()
-//   console.log(dt)
+  // console.log(elapsedTime)
   clearScreen(c)
   c.translate(0.5, 0.5)
   
@@ -26,6 +27,9 @@ export const renderGame = (c, m, dt, elapsedTime, pathWays, score) => {
 
   // drawPathways(c, pathWays)
   // drawHud(c, score)
+
+  const playerPos = getPlayerPosFromMap(m)
+  drawPlayer(c, playerPos.y, playerPos.x, elapsedTime)
 
   c.restore()
 }
@@ -45,7 +49,7 @@ const contractTileRect = (rct, pixels) => [
 ]
 
 const drawEmptyCell = (c, j, i) => {
-  c.fillStyle = "white"
+  c.fillStyle = (j+i)%2 == 1 ? "white" : "#efefef"
   const rct = createTileRect(j, i)
   c.fillRect(...rct)
   c.strokeRect(...rct)
@@ -56,12 +60,49 @@ const drawWall = (c, j, i) => {
   c.fillRect(...createTileRect(j, i))
 }
 
-const drawPlayer = (c, j, i) => {
-  c.fillStyle = 'red'
+let lastPlayerPos = {x: 0, y:0}
+let isPlayerMoving = false
+let playerMoveTime = null
+let playerMovedPos = null
+let playerMoveDirection = null
+
+const drawPlayer = (c, j, i, elapsedTime) => {
+  // initial player pos
+  if(!lastPlayerPos){
+    lastPlayerPos = {x: i, y: j}
+  }
+  
+  let playerX = i*CELL_SIZE + CELL_SIZE/2
+  let playerY = j*CELL_SIZE + CELL_SIZE/2
+  let playerR = CELL_SIZE/2.5
+
+  // player moved
+  if(lastPlayerPos.x !== i || lastPlayerPos.y !== j){
+    isPlayerMoving = true
+    playerMovedPos = {x: lastPlayerPos.x, y: lastPlayerPos.y}
+    playerMoveTime = elapsedTime
+    playerMoveDirection = {x: i - lastPlayerPos.x, y: j - lastPlayerPos.y}
+  }
+
+  if(isPlayerMoving){
+    const dt = elapsedTime - playerMoveTime
+    const dx = dt * 0.3
+    playerX = (playerMovedPos.x*CELL_SIZE + CELL_SIZE/2) + playerMoveDirection.x * dx
+    playerY = (playerMovedPos.y*CELL_SIZE + CELL_SIZE/2) + playerMoveDirection.y * dx
+    playerR = (CELL_SIZE/2.5) - dx/3
+
+    if (Math.abs(dx) >= CELL_SIZE) {
+      isPlayerMoving = false
+    }
+  }
+
+  c.fillStyle = "red"
   c.beginPath()
-  c.arc(i*CELL_SIZE + CELL_SIZE/2, j*CELL_SIZE + CELL_SIZE/2, CELL_SIZE/2.5, 0, 2 * Math.PI);
+  c.arc(playerX, playerY, playerR, 0, 2 * Math.PI);
   c.closePath()
   c.fill()
+
+  lastPlayerPos = {x: i, y: j}
 }
 
 const drawAnt = (c, j, i, elapsedTime) => {
@@ -119,7 +160,7 @@ const renderCell = (c, j, i, id, elapsedTime) => {
       break
     case PLAYER_ON_EMPTY_CELL:
       drawEmptyCell(c, j, i)
-      drawPlayer(c, j, i)
+      drawPlayer(c, j, i, elapsedTime)
       break
     case PORTAL:
       drawEmptyCell(c, j, i)
@@ -127,7 +168,7 @@ const renderCell = (c, j, i, id, elapsedTime) => {
       break
     case PLAYER_ON_PORTAL:
       drawEmptyCell(c, j, i)     
-      drawPlayer(c, j, i)
+      drawPlayer(c, j, i, elapsedTime)
       drawPortal(c, j, i, elapsedTime)
       break
     case ENEMY_ANT:
@@ -144,7 +185,7 @@ const renderCell = (c, j, i, id, elapsedTime) => {
     case PLAYER_ON_BOAT:
       drawLake(c, j, i, elapsedTime)
       drawBoat(c, j, i)
-      drawPlayer(c, j, i)
+      drawPlayer(c, j, i, elapsedTime)
       break
   }
   c.restore()

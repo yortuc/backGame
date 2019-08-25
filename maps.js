@@ -79,4 +79,4 @@ const map7 = [
     [0,0,0,0,0,0,0,0,0,0,0,0,],
 ]
 
-export const maps = [map2, map3, map4, map5, map1, map6]
+export const maps = [map7, map2, map3, map4, map5, map1, map6]
