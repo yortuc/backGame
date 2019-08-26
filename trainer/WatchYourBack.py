@@ -5,6 +5,12 @@
 # 
 ###################################################
 
+import random
+
+from copy import copy, deepcopy
+from map_utilities import encode_map, print_map
+from constants import EMPTY_CELL, PLAYER_CONTAINER_CELLS, PLAYER_MOVABLE_CELLS
+
 class Space:
     def __init__(self, n):
         self.n = n

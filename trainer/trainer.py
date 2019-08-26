@@ -1,8 +1,9 @@
 import numpy as np
-import random
 import time
+import random
+
 from IPython.display import clear_output
-from copy import copy, deepcopy
+from map_utilities import create_states_for_playerless_map
 from WatchYourBack import WatchYourBack
 
 
