@@ -9,7 +9,7 @@ import random
 
 from copy import copy, deepcopy
 from map_utilities import encode_map, print_map
-from constants import EMPTY_CELL, PLAYER_CONTAINER_CELLS, PLAYER_MOVABLE_CELLS
+from constants import PLAYER_ON_EMPTY_CELL, PLAYER_ON_PORTAL, PORTAL, EMPTY_CELL, PLAYER_CONTAINER_CELLS, PLAYER_MOVABLE_CELLS
 
 class Space:
     def __init__(self, n):
@@ -24,6 +24,12 @@ class WatchYourBack:
         self.map = None
         self.action_space = Space(4)
         self.observation_space = Space(len(states))
+        self.action_mapping = {
+            0: [0, -1],
+            1: [1,  0],
+            2: [0,  1],
+            3: [-1, 0]
+        }
         self.reset()
     
     def reset(self):
@@ -42,51 +48,54 @@ class WatchYourBack:
     def close(self):
         return 0
     
-    def move_enemies(self):
-        [player_pos_y, player_pos_x] = self.get_player_pos()
-    
+    def move_entity(self, position, action, goal_cell_id, movable_cells, cell_id, after_goal_cell_id):
+        done = False
+        new_state = None
+        reward = 0
+        info = None
+
+        [delta_x, delta_y] = self.action_mapping[action]
+        [pos_y, pos_x] = position
+        [target_y, target_x] = [pos_y + delta_y, pos_x + delta_x]
+
+        # if entity can move
+        if target_x >= 0 and target_x < len(self.map[0]) and \
+            target_y >= 0 and target_y < len(self.map) and \
+            self.map[target_y][target_x] in movable_cells:
+
+            targetCellId = self.map[target_y][target_x]
+            self.map[pos_y][pos_x] = 0
+
+            if targetCellId == goal_cell_id:
+                # hit the goal
+                reward = 1
+                done = True
+                self.map[target_y][target_x] = after_goal_cell_id
+                info = "hit the goal!"
+            else:
+                self.map[target_y][target_x] = cell_id
+                info = f"player moved to {target_y} {target_x}"
+        else:
+            info = "player could not move"
+            
+        new_state = self.states[encode_map(self.map)]
+        return new_state, reward, done, info
+
     def step(self, action):
         # new_state, reward, done, info = env.step(action)
         #
         # 0: up, 1: right, 2: down, 3: left
         
         done = False
-        new_state = None
-        reward = 0
-        info = None
-        
-        xy = {
-            0: [0, -1],
-            1: [1,  0],
-            2: [0,  1],
-            3: [-1, 0]
-        }
-        
-        [delta_x, delta_y] = xy[action]
-        [player_pos_y, player_pos_x] = self.get_player_pos()
-        [target_pos_y, target_pos_x] = [player_pos_y + delta_y, player_pos_x + delta_x]
-        
-        if target_pos_x >= 0 and target_pos_x < len(self.map[0]) and \
-            target_pos_y >= 0 and target_pos_y < len(self.map) and \
-            self.map[target_pos_y][target_pos_x] in PLAYER_MOVABLE_CELLS:
 
-            targetCellId = self.map[target_pos_y][target_pos_x]
-            self.map[player_pos_y][player_pos_x] = 0
-
-            if targetCellId == 3:
-                # hit the goal
-                reward = 1
-                done = True
-                self.map[target_pos_y][target_pos_x] = 5
-                info = "hit the goal!"
-            else:
-                self.map[target_pos_y][target_pos_x] = 2
-                info = f"player moved to {target_pos_y} {target_pos_x}"
+        player_pos = self.get_player_pos()
+        state_after_player_move, reward, done, info = self.move_entity(
+            position = player_pos, 
+            action = action, 
+            goal_cell_id = PORTAL,
+            movable_cells = PLAYER_MOVABLE_CELLS,
+            cell_id = PLAYER_ON_EMPTY_CELL,
+            after_goal_cell_id = PLAYER_ON_PORTAL
+        )
         
-        else:
-            info = "player could not move"
-            
-        # each state has a number value
-        new_state = self.states[encode_map(self.map)]
-        
-        return new_state, reward, done, info
+        return state_after_player_move, reward, done, info
