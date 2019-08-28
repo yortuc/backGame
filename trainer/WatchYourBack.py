@@ -62,6 +62,10 @@ class WatchYourBack:
         new_state = None
         reward = 0
         info = None
+        turn_map = {
+            2 : 'player',
+            6 : 'enemy'
+        }
 
         [delta_x, delta_y] = self.action_mapping[action]
         [pos_y, pos_x] = position
@@ -80,17 +84,14 @@ class WatchYourBack:
                 reward = 1
                 done = True
                 self.map[target_y][target_x] = after_goal_cell_id
-                info = "hit the goal!"
+                info = f"{turn_map[cell_id]} hit the goal!"
             else:
                 self.map[target_y][target_x] = cell_id
-                info = f"player moved to {target_y} {target_x}"
+                info = f"{turn_map[cell_id]} moved to {target_y} {target_x}"
         else:
-            info = "player could not move"
+            info = f"{turn_map[cell_id]} could not move"
 
-        encoded = encode_map(self.map)    
-        print(encoded)
-
-        new_state = self.states[encoded]
+        new_state = self.states[encode_map(self.map)]
         return new_state, reward, done, info
 
     def step(self, action, turn):

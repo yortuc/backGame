@@ -39,8 +39,8 @@ q_table_enemy = np.zeros((state_space_size, action_space_size))
 ####################################### 
 # Setup Hyper parameters              #
 #######################################
-num_episodes = 10000
-max_steps_per_episode = 100
+num_episodes = 100000
+max_steps_per_episode = 1000
 
 learning_rate = 0.1
 discount_rate = 0.99
@@ -159,6 +159,7 @@ for episode in range(3):
                 # Agent stepped in a hole and lost episode   
                 time.sleep(3)
                 clear_output(wait=True)
+            break
         
         # Player: Choose action with highest Q-value for current state       
         enemy_action = np.argmax(q_table_enemy[new_state,:])
@@ -173,6 +174,7 @@ for episode in range(3):
                 # Agent stepped in a hole and lost episode   
                 time.sleep(3)
                 clear_output(wait=True)
+            break
 
         # Set new state
         state = new_state2
