@@ -65,3 +65,8 @@ def create_states_for_playerless_map(m, enemy_count=0):
         dct[states_with_goal_unq[index]] = index
     return dct
     
+
+def clear_console_output():
+    import os
+    clear = lambda: os.system('clear')
+    clear()
