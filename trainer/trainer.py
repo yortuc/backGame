@@ -13,7 +13,7 @@ states = create_states_for_playerless_map([
     [0, 0, 0]
 ], enemy_count = 1)
 
-print(states)
+print('states', states)
 
 original_map = [
     [1, 0, 3],
@@ -33,7 +33,8 @@ env = WatchYourBack(original_map, states)
 action_space_size = env.action_space.n
 state_space_size = env.observation_space.n
 
-q_table = np.zeros((state_space_size, action_space_size))
+q_table_player = np.zeros((state_space_size, action_space_size))
+q_table_enemy = np.zeros((state_space_size, action_space_size))
 
 ####################################### 
 # Setup Hyper parameters              #
@@ -64,28 +65,50 @@ for episode in range(num_episodes):
         # Exploration-exploitation trade-off
         exploration_rate_threshold = random.uniform(0, 1)
         
-        # explore or exploit?
-        if exploration_rate_threshold > exploration_rate:
-            action = np.argmax(q_table[state,:])  # exploit: get highest q-value move
+        ##########################
+        # PLAYER TRAIN           #
+        ##########################
+        if random.uniform(0, 1) > exploration_rate:
+            player_action = np.argmax(q_table_player[state,:])  # exploit: get highest q-value move
         else:
-            action = env.action_space.sample()    # explore: select a random move
+            player_action = env.action_space.sample()    # explore: select a random move
         
-        # Take new action
-        new_state, reward, done, info = env.step(action)
+        # Take new player action
+        new_state, reward_player, player_done, info = env.step(player_action, 1)
 
-        print(new_state, reward, done, info)
+        print(new_state, reward_player, player_done, info)
         
         # Update Q-table
-        q_table[state, action] = q_table[state, action] * (1 - learning_rate) + \
-            learning_rate * (reward + discount_rate * np.max(q_table[new_state, :]))
+        q_table_player[state, player_action] = q_table_player[state, player_action] * (1 - learning_rate) + \
+            learning_rate * (reward_player + discount_rate * np.max(q_table_player[new_state, :]))
         
+        if player_done == True: 
+            break
+
+        ##########################
+        # ENEMY TRAIN            #
+        ##########################
+        if random.uniform(0, 1) > exploration_rate:
+            action_enemy = np.argmax(q_table_enemy[new_state,:])  # exploit: get highest q-value move
+        else:
+            action_enemy = env.action_space.sample()    # explore: select a random move
+        
+        # Take new enemy action
+        new_state2, reward_enemy, enemy_done, info = env.step(action_enemy, 2)
+
+        print(new_state2, reward_enemy, enemy_done, info)
+        
+        # Update Q-table
+        q_table_enemy[new_state, action_enemy] = q_table_enemy[new_state, action_enemy] * (1 - learning_rate) + \
+            learning_rate * (reward_enemy + discount_rate * np.max(q_table_enemy[new_state2, :]))
+
         # Set new state
-        state = new_state
+        state = new_state2
 
         # Add new reward        
-        rewards_current_episode += reward 
+        rewards_current_episode += reward_player
 
-        if done == True: 
+        if enemy_done == True: 
             break
 
     # Exploration rate decay   
@@ -123,12 +146,10 @@ for episode in range(3):
         env.render()
         time.sleep(0.3)
     
-        # Choose action with highest Q-value for current state       
-        action = np.argmax(q_table[state,:])        
+        # Player: Choose action with highest Q-value for current state       
+        player_action = np.argmax(q_table_player[state,:])
+        new_state, reward, done, info = env.step(player_action, 1)
 
-        # Take new action
-        new_state, reward, done, info = env.step(action)
-        
         if done:
             if reward == 1:
                 # Agent reached the goal and won episode
@@ -138,8 +159,22 @@ for episode in range(3):
                 # Agent stepped in a hole and lost episode   
                 time.sleep(3)
                 clear_output(wait=True)
-            
+        
+        # Player: Choose action with highest Q-value for current state       
+        enemy_action = np.argmax(q_table_enemy[new_state,:])
+        new_state2, reward2, done2, info2 = env.step(enemy_action, 2)
+        
+        if done2:
+            if reward2 == 1:
+                # Agent reached the goal and won episode
+                print("****ENEMY WON!****")
+                time.sleep(3)
+            else:
+                # Agent stepped in a hole and lost episode   
+                time.sleep(3)
+                clear_output(wait=True)
+
         # Set new state
-        state = new_state
+        state = new_state2
         
 env.close()

@@ -49,8 +49,19 @@ def create_states_for_playerless_map(m, enemy_count=0):
                 copy_s = copy_s.replace('2', '0')
                 states_with_goal.append(copy_s)
 
-    states_with_goal_unq = list(set(states_with_goal))
+    # enemy eating player
+    states_with_enemy_reaching_goal = states_with_goal[:]
+    for s in states_with_enemy_reaching_goal:
+        for cellIndex in range(len(s)):
+            cell = int(s[cellIndex])
+            if cell == 2:
+                copy_s = s[:cellIndex] + '0' + s[cellIndex+1:]
+                states_with_enemy_reaching_goal.append(copy_s)
+
+    # convert to state dictionary
+    states_with_goal_unq = list(set(states_with_enemy_reaching_goal))
     dct = {}
     for index in range(len(states_with_goal_unq)):
         dct[states_with_goal_unq[index]] = index
     return dct
+    
