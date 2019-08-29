@@ -1,10 +1,9 @@
 import numpy as np
 import random
 
-from IPython.display import clear_output
 from map_utilities import create_states_for_playerless_map
 from WatchYourBack import WatchYourBack
-from simulator import simulate
+from simulator import simulate, play_against_enemy
 
 
 states = create_states_for_playerless_map([
@@ -49,8 +48,8 @@ q_table_enemy = np.zeros((state_space_size, action_space_size))
 ####################################### 
 # Setup Hyper parameters              #
 # ######################################
-num_episodes = 10000
-max_steps_per_episode = 100
+num_episodes = 100000
+max_steps_per_episode = 1000
 
 learning_rate = 0.1
 discount_rate = 0.99
@@ -85,8 +84,6 @@ for episode in range(num_episodes):
         
         # Take new player action
         new_state, reward_player, player_done, info = env.step(player_action, 1)
-
-        # print(new_state, reward_player, player_done, info)
         
         # Update Q-table
         q_table_player[state, player_action] = q_table_player[state, player_action] * (1 - learning_rate) + \
@@ -105,8 +102,6 @@ for episode in range(num_episodes):
         
         # Take new enemy action
         new_state2, reward_enemy, enemy_done, info = env.step(action_enemy, 2)
-
-        # print(new_state2, reward_enemy, enemy_done, info)
         
         # Update Q-table
         q_table_enemy[new_state, action_enemy] = q_table_enemy[new_state, action_enemy] * (1 - learning_rate) + \
@@ -135,3 +130,4 @@ np.savetxt('q_table_enemy.txt', q_table_enemy)
 
 
 # simulate(env, q_table_player, q_table_enemy, max_steps_per_episode)
+play_against_enemy(env, q_table_player, q_table_enemy)

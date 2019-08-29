@@ -81,11 +81,12 @@ class WatchYourBack:
 
             if targetCellId == goal_cell_id:
                 # hit the goal
-                reward = 1
+                reward = 1000
                 done = True
                 self.map[target_y][target_x] = after_goal_cell_id
                 info = f"{turn_map[cell_id]} hit the goal!"
             else:
+                reward = 10
                 self.map[target_y][target_x] = cell_id
                 info = f"{turn_map[cell_id]} moved to {target_y} {target_x}"
         else:

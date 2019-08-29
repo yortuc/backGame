@@ -58,3 +58,38 @@ def simulate(env,q_table_player, q_table_enemy, max_steps_per_episode, episodes=
             state = new_state2
             
     env.close()
+
+
+def play_against_enemy(env,q_table_player, q_table_enemy):
+    state = env.reset()
+    done = False
+    print("game ready: ")
+
+    clear_console_output()
+    env.render()
+    
+    while not done:
+        player_action = int(input())
+        new_state, reward, done, info = env.step(player_action, 1)
+
+        clear_console_output()
+        env.render()
+
+        if done:
+            print("**** YOU WON! ****")
+            break
+            
+        # enemy chooses action with highest Q-value for current state
+        enemy_action = np.argmax(q_table_enemy[new_state,:])
+        new_state2, reward2, done2, info2 = env.step(enemy_action, 2)
+        
+        clear_console_output()
+        env.render()
+
+        if done2:
+            print("**** ENEMY WON! ****")
+            break
+
+        state = new_state2
+            
+    env.close()
