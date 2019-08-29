@@ -8,9 +8,10 @@ import {
   ENEMY_ANT,
   LAKE, 
   BOAT_ON_LAKE,
-  PLAYER_ON_BOAT
+  PLAYER_ON_BOAT,
+  ANT_SPRITE
 } from './constants.js'
-import { clearScreen, drawSpiral } from './graphics.js'
+import { clearScreen, drawSpiral, drawSprite } from './graphics.js'
 
 export const renderGame = (c, m, dt, elapsedTime, pathWays, score) => {
   c.save()
@@ -132,7 +133,8 @@ const renderCell = (c, j, i, id, elapsedTime) => {
       break
     case ENEMY_ANT:
       drawEmptyCell(c, j,i)
-      drawAnt(c, j, i, elapsedTime)
+      // drawAnt(c, j, i, elapsedTime)
+      drawSprite(c, j, i, ANT_SPRITE)
       break
     case LAKE:
       drawLake(c, j, i, elapsedTime)

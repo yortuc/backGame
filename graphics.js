@@ -1,4 +1,4 @@
-import { CELL_SIZE, GAME_HEIGHT, GAME_WIDTH } from './constants.js'
+import { CELL_SIZE, GAME_HEIGHT, GAME_WIDTH, COLORS } from './constants.js'
 
 export const clearScreen = (c) => {
     c.save()
@@ -26,4 +26,16 @@ export const drawSpiral = (c, j, i, radius, angle) => {
         c.lineTo(x, y)
     }    
     c.stroke()
+}
+
+export const drawSprite = (c, j, i, sprite) => {
+    const width = CELL_SIZE / (sprite[0].length)
+    c.save()  
+    for(let y = 0; y<sprite.length; y++){
+        for(let x = 0; x<sprite[0].length; x++){
+            c.fillStyle = COLORS[sprite[y][x]]
+            c.fillRect(i*CELL_SIZE + x*width, j*CELL_SIZE + y*width, width, width)
+        }
+    }
+    c.restore()
 }

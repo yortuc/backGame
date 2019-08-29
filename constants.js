@@ -55,3 +55,18 @@ export const MOVE_CELL_TRANSITIONS = {
 export const ENEMY_ANT_MOVE_CELL_TRANSITIONS = {
   // 
 }
+
+export const COLORS = {
+  0: '#000',
+  1: '#fff',
+  2: '#f00',
+  3: '#0f0'
+}
+
+export const ANT_SPRITE = [
+  [0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0],
+  [0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0],
+  [0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0],
+  
+]
