@@ -6,6 +6,7 @@ from map_utilities import create_states_for_playerless_map
 from WatchYourBack import WatchYourBack
 from simulator import simulate
 
+
 states = create_states_for_playerless_map([
     [0,0,0,0,3,0,0,0],
     [0,0,0,0,0,0,0,0],
@@ -37,7 +38,7 @@ env = WatchYourBack(original_map, states)
 #                                      #
 # rows: state space in the environment #
 # columns: action space.               #
-########################################
+# #######################################
 
 action_space_size = env.action_space.n
 state_space_size = env.observation_space.n
@@ -47,7 +48,7 @@ q_table_enemy = np.zeros((state_space_size, action_space_size))
 
 ####################################### 
 # Setup Hyper parameters              #
-#######################################
+# ######################################
 num_episodes = 10000
 max_steps_per_episode = 100
 
@@ -62,7 +63,7 @@ exploration_decay_rate = 0.001
 ####################################### 
 # TRAIN                               #
 # Q-learning algorithm                #
-#######################################
+# ######################################
 rewards_all_episodes = []
 for episode in range(num_episodes):
     # initialize new episode params
@@ -129,5 +130,8 @@ for episode in range(num_episodes):
 
 
 print('Training completed.')
+np.savetxt('q_table_player.txt', q_table_player)
+np.savetxt('q_table_enemy.txt', q_table_enemy)
 
-simulate(env, q_table_player, q_table_enemy, max_steps_per_episode)
+
+# simulate(env, q_table_player, q_table_enemy, max_steps_per_episode)
