@@ -9,6 +9,12 @@ matplotlib = "*"
 jupyter = "*"
 numpy = "*"
 jupytext = "*"
+pytorch = "*"
+torch = "*"
+torchvision = "*"
+gym = "*"
+pillow = "*"
+networkx = "*"
 
 [requires]
 python_version = "3.7"

@@ -36,7 +36,7 @@ def simulate(env,q_table_player, q_table_enemy, max_steps_per_episode, episodes=
                 else:
                     # Agent stepped in a hole and lost episode   
                     time.sleep(3)
-                    clear_output(wait=True)
+                    clear_console_output(wait=True)
                 break
             
             # Player: Choose action with highest Q-value for current state       
@@ -51,7 +51,7 @@ def simulate(env,q_table_player, q_table_enemy, max_steps_per_episode, episodes=
                 else:
                     # Agent stepped in a hole and lost episode   
                     time.sleep(3)
-                    clear_output(wait=True)
+                    clear_console_output(wait=True)
                 break
 
             # Set new state
@@ -78,18 +78,7 @@ def play_against_enemy(env,q_table_player, q_table_enemy):
         if done:
             print("**** YOU WON! ****")
             break
-            
-        # enemy chooses action with highest Q-value for current state
-        enemy_action = np.argmax(q_table_enemy[new_state,:])
-        new_state2, reward2, done2, info2 = env.step(enemy_action, 2)
-        
-        clear_console_output()
-        env.render()
 
-        if done2:
-            print("**** ENEMY WON! ****")
-            break
-
-        state = new_state2
+        state = new_state
             
     env.close()

@@ -1,5 +1,6 @@
+import networkx as nx
 from copy import copy, deepcopy
-from constants import EMPTY_CELL
+from constants import EMPTY_CELL, PLAYER_MOVABLE_CELLS
 
 def encode_map(m):
     ret = ''
@@ -70,3 +71,24 @@ def clear_console_output():
     import os
     clear = lambda: os.system('clear')
     clear()
+
+def map_to_graph(m):
+    G = nx.grid_2d_graph(len(m), len(m), periodic=False, create_using=None)
+    
+    print(len(m))
+
+    for j in range(len(m)):
+        for i in range(len(m[j])):
+            cell = m[j][i]
+            
+            if cell not in PLAYER_MOVABLE_CELLS:
+                G.remove_node((j, i))
+    return G
+
+def euclidean_distance(a, b):
+    (x1, y1) = a
+    (x2, y2) = b
+    return ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5
+
+def get_shortest_path(graph, source, target):
+    return nx.astar_path(graph, source, target, euclidean_distance)

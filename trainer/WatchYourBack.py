@@ -8,7 +8,7 @@
 import random
 
 from copy import copy, deepcopy
-from map_utilities import encode_map, print_map
+from map_utilities import encode_map, print_map, get_shortest_path, map_to_graph
 from constants import PLAYER_ON_EMPTY_CELL, PLAYER_ON_PORTAL, \
 PORTAL, EMPTY_CELL, ENEMY_ANT, PLAYER_CONTAINER_CELLS, PLAYER_MOVABLE_CELLS, ENEMY_MOVABLE_CELLS
 
@@ -31,6 +31,7 @@ class WatchYourBack:
             2: [0,  1],
             3: [-1, 0]
         }
+        self.graph = map_to_graph(self.original_map)
         self.reset()
     
     def reset(self):
@@ -57,6 +58,25 @@ class WatchYourBack:
                     ret.append([j, i])
         return ret
     
+
+    def move_enemies(self):
+        """returns boolean if player got eaten
+        """
+        player_lost = False
+        player_pos = self.get_player_pos()
+        enemy_positions = self.get_enemy_positions()
+
+        for enemy_pos in enemy_positions:
+            path = get_shortest_path(self.graph, enemy_pos, player_pos)
+
+            if len(path) > 0:
+                (enemyNextPosY, enemyNextPostX) = path[1]
+                if self.map[enemyNextPosY][enemyNextPostX] in PLAYER_CONTAINER_CELLS:
+                    player_lost = True
+                self.map[enemyNextPosY][enemyNextPostX] = 6
+                self.map[enemy.y][enemy.x] = 0
+        return player_lost
+
     def move_entity(self, position, action, goal_cell_id, movable_cells, cell_id, after_goal_cell_id):
         done = False
         new_state = None
@@ -86,9 +106,12 @@ class WatchYourBack:
                 self.map[target_y][target_x] = after_goal_cell_id
                 info = f"{turn_map[cell_id]} hit the goal!"
             else:
-                reward = 10
+                # entity moved
+                reward = 0
                 self.map[target_y][target_x] = cell_id
                 info = f"{turn_map[cell_id]} moved to {target_y} {target_x}"
+                if self.move_enemies():
+                    return new_state, -1000, True, 'Player lost'
         else:
             info = f"{turn_map[cell_id]} could not move"
 
