@@ -1,6 +1,6 @@
 export const CELL_SIZE = 40
 export const GAME_WIDTH = 480
-export const GAME_HEIGHT = 320
+export const GAME_HEIGHT = 480
 
 export const EMPTY_CELL = 0              // 0: empty cell
 export const WALL = 1                    // 1: wall
@@ -51,7 +51,3 @@ export const MOVE_CELL_TRANSITIONS = {
 //   10 : 8,  // player on boat -> boat, 
 //    8 : 10  // lake -> player on boat
 // }
-
-export const ENEMY_ANT_MOVE_CELL_TRANSITIONS = {
-  // 
-}
