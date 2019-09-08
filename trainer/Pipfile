@@ -1,0 +1,20 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[packages]
+pytest = "*"
+matplotlib = "*"
+jupyter = "*"
+numpy = "*"
+jupytext = "*"
+pytorch = "*"
+torch = "*"
+torchvision = "*"
+gym = "*"
+pillow = "*"
+networkx = "*"
+
+[requires]
+python_version = "3.7"
