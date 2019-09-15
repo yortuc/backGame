@@ -1,3 +1,5 @@
+from enum import Enum
+
 EMPTY_CELL = 0
 WALL = 1
 PLAYER_ON_EMPTY_CELL = 2
@@ -8,3 +10,14 @@ ENEMY_ANT = 6
 PLAYER_CONTAINER_CELLS = [PLAYER_ON_EMPTY_CELL, PLAYER_ON_PORTAL]
 PLAYER_MOVABLE_CELLS = [EMPTY_CELL, PORTAL]
 ENEMY_MOVABLE_CELLS = [EMPTY_CELL, PLAYER_ON_EMPTY_CELL]
+
+class PlayerAction(Enum):
+    UP    = [ 0, -1]
+    RIGHT = [ 1,  0]
+    DOWN  = [ 0,  1]
+    LEFT  = [-1,  0]
+
+class GameStatus(Enum):
+    ONGOING = 0
+    PLAYER_WON = 1
+    PLAYER_LOST = 2
