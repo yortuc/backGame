@@ -37,6 +37,7 @@ class WatchYourBack:
         player_pos = self.level.get_player_pos()
         enemy_positions = self.level.get_enemy_positions()
 
+        print("graph nodes:")
         print(self.level.graph.nodes)
 
         for enemy_pos in enemy_positions:

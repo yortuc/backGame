@@ -14,6 +14,12 @@ class Level:
     def update_graph(self):
         self.graph = map_to_graph(self.level)
 
+    def get_portal_pos(self):
+        for j in range(self.height):
+            for i in range(self.width):
+                if self.level[j][i] == PORTAL:
+                    return [j, i]
+
     def get_player_pos(self):
         for j in range(self.height):
             for i in range(self.width):

@@ -47,17 +47,14 @@ def test_mutate_genes():
     assert len(player.genes) == 5
 
 def test_calculate_fitness():
-    # game = WatchYourBack(Level([
-    #     [2, 0, 3],
-    #     [0, 0, 0],
-    #     [6, 0, 0]
-    # ]))
-    # player = Player(
-    #     step_size=1, 
-    #     game=game, 
-    #     genes=[PlayerAction.RIGHT]
-    # )
-    # player.move()
-    # assert player.status == GameStatus.ONGOING
-    # assert game.level.get_cell(1, 0) == ENEMY_ANT
-    pass
+    game = WatchYourBack(Level([
+        [2, 3],
+        [0, 0]
+    ]))
+    player = Player(
+        step_size=1, 
+        game=game, 
+        genes=None
+    )
+    player.calculate_fitness()
+    assert player.fitness == 1

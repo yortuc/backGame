@@ -1,4 +1,6 @@
+import math
 import random
+
 from constants import PlayerAction, GameStatus
 
 ACTIONS = [PlayerAction.UP, PlayerAction.RIGHT, PlayerAction.DOWN, PlayerAction.LEFT]
@@ -8,7 +10,6 @@ class Player:
         self.genes = self.create_random_genes(step_size) if genes is None else genes
         self.status = GameStatus.ONGOING
         self.step_size = step_size
-        self.distance_to_portal = 0
         self.game = game
         self.step = 0
         self.fitness = 0
@@ -48,5 +49,8 @@ class Player:
         if self.status == GameStatus.PLAYER_WON:
             fitness = 10000.0/(self.step * self.step)
         else:
-            fitness = 1.0/self.distance_to_portal
+            player_pos = self.game.level.get_player_pos()
+            portal_pos = self.game.level.get_portal_pos()
+            distance_to_portal = math.sqrt((player_pos[1] - portal_pos[1])**2 + (player_pos[0] - portal_pos[0])**2)
+            fitness = 1.0/distance_to_portal
         self.fitness = fitness
