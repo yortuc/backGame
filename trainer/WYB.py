@@ -30,6 +30,9 @@ class WatchYourBack:
                 self.status = GameStatus.PLAYER_WON
             else:
                 self.level.set_cell(target_y, target_x, PLAYER_ON_EMPTY_CELL)
+            return True
+        else:
+            return False
 
     def move_enemies(self):
         """move enemies with shortest path algorithm
@@ -37,9 +40,9 @@ class WatchYourBack:
         player_pos = self.level.get_player_pos()
         enemy_positions = self.level.get_enemy_positions()
 
-        print("graph nodes:")
-        print(self.level.graph.nodes)
-        print(self.level.level)
+        # print("graph nodes:")
+        # print(self.level.graph.nodes)
+        # print(self.level.level)
 
         for enemy_pos in enemy_positions:
             path = get_shortest_path(self.level.graph, enemy_pos, player_pos)

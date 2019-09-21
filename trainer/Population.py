@@ -42,9 +42,16 @@ class Population:
         self.population = self.population[1:]
 
         for player in self.population:
+            player.fitness = 0
+            player.status = GameStatus.ONGOING
             player.mutate()
 
         self.population = [top_player] + self.population
+        self.population = [
+            Player(step_size=self.step_size, 
+                   game=WatchYourBack(Level(deepcopy(self.level_data))), 
+                   genes=p.genes
+            ) for p in self.population]
 
     def mutate(self):
         for player in self.population:

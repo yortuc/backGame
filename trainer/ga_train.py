@@ -9,12 +9,12 @@ level_data = [
 ]
 
 population = Population(
-    population_size=10,
+    population_size=100,
     step_size=5,
     level_data=level_data
 )
 
-for generation in range(1000):
+for generation in range(5):
     # play them until every player is done
     while not population.is_all_players_done():
         population.update()
@@ -22,7 +22,7 @@ for generation in range(1000):
     population.calculate_fitness()
     print(f"Generation: #{generation}")
     print("Genes \t Fitness")
-    for player in population.population:
+    for player in population.population[:5]:
         print(f"{[k.value for k in player.genes[:player.step]]} \t {player.fitness}")
     print("---------")
 
