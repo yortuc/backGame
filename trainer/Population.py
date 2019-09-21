@@ -1,24 +1,26 @@
 import random
 import operator
 
+from Level import Level
 from Player import Player
 from copy import copy, deepcopy
 from constants import PlayerAction, GameStatus
 from WYB import WatchYourBack
 
 class Population:
-    def __init__(self, population_size, level):
-        self.level = level
-        self.size = population_size
-        self.mutation_rate = 0.01
+    def __init__(self, population_size, step_size, level_data, mutation_rate=0.01):
+        self.level_data = level_data
+        self.population_size = population_size
+        self.step_size = step_size
+        self.mutation_rate = mutation_rate
         self.population = self.create_population()
 
     def create_population(self):
         ret = []
-        for i in range(self.size):
+        for i in range(self.population_size):
             new_player = Player(
-                step_size=100, 
-                game=WatchYourBack(self.level),
+                step_size=self.step_size, 
+                game=WatchYourBack(Level(deepcopy(self.level_data))),
                 genes=None
             )
             ret.append(new_player)
@@ -34,19 +36,15 @@ class Population:
         
     def natural_selection(self):
         # sor players by fitness
-        self.population.sort(key=operator.attrgetter('fitness'))
+        self.population.sort(key=operator.attrgetter('fitness'), reverse=True)
 
-        # take top half
-        half_size = int(len(self.population)/2)
-        best_players = self.population[:half_size]
+        top_player = self.population[0]
+        self.population = self.population[1:]
 
-        # mutate the rest
-        worse_players = self.population[half_size:]
-        for p in worse_players:
-            p.mutate()
+        for player in self.population:
+            player.mutate()
 
-        # create next generation
-        self.population = best_players + worse_players
+        self.population = [top_player] + self.population
 
     def mutate(self):
         for player in self.population:

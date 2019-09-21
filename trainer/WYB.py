@@ -39,6 +39,7 @@ class WatchYourBack:
 
         print("graph nodes:")
         print(self.level.graph.nodes)
+        print(self.level.level)
 
         for enemy_pos in enemy_positions:
             path = get_shortest_path(self.level.graph, enemy_pos, player_pos)
@@ -51,4 +52,4 @@ class WatchYourBack:
                     self.status = GameStatus.PLAYER_LOST
 
                 self.level.set_cell(enemyNextPosY, enemyNextPostX, ENEMY_ANT)
-                self.level.set_cell(enemy_pos[1], enemy_pos[0], EMPTY_CELL)
+                self.level.set_cell(enemy_pos[0], enemy_pos[1], EMPTY_CELL)

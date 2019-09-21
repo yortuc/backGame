@@ -14,6 +14,8 @@ class Player:
         self.step = 0
         self.fitness = 0
         self.mutation_rate = 0.01
+        self.last_pos = None
+        self.win_steps = -1
 
     def create_random_genes(self, size):
         ret = []
@@ -25,15 +27,15 @@ class Player:
         return Player(self.step_size, self.game, self.genes)
 
     def move(self):
-        # run out of moves, should die
-        if self.step_size < self.step:
-            self.status = GameStatus.PLAYER_LOST
-        else:
+        self.last_pos = self.game.level.get_player_pos()
+        if self.step < self.step_size:
             self.game.move_player(self.genes[self.step])
             if self.game.status == GameStatus.ONGOING:
                 self.game.move_enemies()
             self.status = self.game.status
             self.step += 1
+        else:
+            self.status = GameStatus.PLAYER_LOST
 
     def update(self):
         if self.status == GameStatus.ONGOING:
@@ -49,7 +51,7 @@ class Player:
         if self.status == GameStatus.PLAYER_WON:
             fitness = 10000.0/(self.step * self.step)
         else:
-            player_pos = self.game.level.get_player_pos()
+            player_pos = self.last_pos
             portal_pos = self.game.level.get_portal_pos()
             distance_to_portal = math.sqrt((player_pos[1] - portal_pos[1])**2 + (player_pos[0] - portal_pos[0])**2)
             fitness = 1.0/distance_to_portal
