@@ -20,10 +20,21 @@ level_data2 = [
     [0,0,0,2,0,0,0,0]
 ]
 
+level_data3 = [
+    [1,1,0,2,0,0,1,1],
+    [0,0,0,0,0,0,1,1],
+    [0,1,1,0,1,0,1,1],
+    [0,1,1,0,1,0,0,1],
+    [0,1,1,0,0,0,0,1],
+    [0,1,1,0,0,0,0,1],
+    [6,6,0,0,0,0,0,1],
+    [3,0,0,0,0,0,1,1]
+]
+
 population = Population(
     population_size=100,
-    step_size=15,
-    level_data=level_data2,
+    step_size=25,
+    level_data=level_data3,
     mutation_rate=0.1
 )
 
@@ -38,7 +49,7 @@ for generation in range(50000):
     print(f"Generation: #{generation}")
     print("Genes \t Fitness")
     for player in population.population[:5]:
-        print(f"{[k.value for k in player.genes[:player.step]]} \t {player.fitness} \t {player.status} \t {player.game.level.level}")
+        print(f"{[k.value for k in player.genes[:player.step]]} \t {player.fitness} \t {player.status}")
     print("---------")
 
     # evolve population
