@@ -1,7 +1,8 @@
 from copy import copy, deepcopy
 
 from constants import PLAYER_ON_EMPTY_CELL, PLAYER_ON_PORTAL, \
-PORTAL, EMPTY_CELL, ENEMY_ANT, PLAYER_CONTAINER_CELLS, PLAYER_MOVABLE_CELLS, ENEMY_MOVABLE_CELLS
+PORTAL, EMPTY_CELL, ENEMY_ANT, PLAYER_CONTAINER_CELLS, PLAYER_MOVABLE_CELLS, ENEMY_MOVABLE_CELLS, \
+ENEMY_CONTAINER_CELLS, ENEMY_ANT_ON_PORTAL
 from map_utilities import map_to_graph
 
 class Level:
@@ -17,7 +18,7 @@ class Level:
     def get_portal_pos(self):
         for j in range(self.height):
             for i in range(self.width):
-                if self.level[j][i] == PORTAL:
+                if self.level[j][i] in [PORTAL, ENEMY_ANT_ON_PORTAL]:
                     return [j, i]
 
     def get_player_pos(self):
@@ -30,7 +31,7 @@ class Level:
         ret = []
         for j in range(self.height):
             for i in range(self.width):
-                if self.level[j][i] == ENEMY_ANT:
+                if self.level[j][i] in ENEMY_CONTAINER_CELLS:
                     ret.append([j, i])
         return ret
     

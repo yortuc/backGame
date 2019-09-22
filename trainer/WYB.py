@@ -3,9 +3,10 @@ import random
 from Level import Level
 from copy import copy, deepcopy
 from map_utilities import encode_map, print_map, get_shortest_path, map_to_graph
+
 from constants import PLAYER_ON_EMPTY_CELL, PLAYER_ON_PORTAL, \
 PORTAL, EMPTY_CELL, ENEMY_ANT, PLAYER_CONTAINER_CELLS, PLAYER_MOVABLE_CELLS, ENEMY_MOVABLE_CELLS,\
-PlayerAction, GameStatus
+MOVE_MAPPING, PlayerAction, GameStatus
 
 
 class WatchYourBack:
@@ -54,5 +55,10 @@ class WatchYourBack:
                 if player_pos == [enemyNextPosY, enemyNextPostX]:
                     self.status = GameStatus.PLAYER_LOST
 
-                self.level.set_cell(enemyNextPosY, enemyNextPostX, ENEMY_ANT)
-                self.level.set_cell(enemy_pos[0], enemy_pos[1], EMPTY_CELL)
+                cur_cell = self.level.get_cell(enemy_pos[0], enemy_pos[1])
+                target_cell = self.level.get_cell(enemyNextPosY, enemyNextPostX)
+
+                # print(f'map[{cur_cell}][{target_cell}]')
+
+                self.level.set_cell(enemyNextPosY, enemyNextPostX, MOVE_MAPPING[cur_cell][target_cell])
+                self.level.set_cell(enemy_pos[0], enemy_pos[1], MOVE_MAPPING[target_cell][cur_cell])

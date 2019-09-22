@@ -1,20 +1,18 @@
 import math
 import random
 
-from constants import PlayerAction, GameStatus
-
-ACTIONS = [PlayerAction.UP, PlayerAction.RIGHT, PlayerAction.DOWN, PlayerAction.LEFT]
+from constants import PlayerAction, GameStatus, ACTIONS
 
 class Player:
-    def __init__(self, step_size, game, genes):
+    def __init__(self, step_size, game, genes, mutation_rate=0.01):
         self.genes = self.create_random_genes(step_size) if genes is None else genes
         self.status = GameStatus.ONGOING
         self.step_size = step_size
         self.game = game
         self.step = 0
         self.fitness = 0
-        self.mutation_rate = 0.01
-        self.last_pos = None
+        self.mutation_rate = mutation_rate
+        self.last_pos = self.game.level.get_player_pos()
         self.win_steps = -1
 
     def create_random_genes(self, size):
@@ -29,7 +27,10 @@ class Player:
     def move(self):
         self.last_pos = self.game.level.get_player_pos()
         if self.step < self.step_size:
-            self.game.move_player(self.genes[self.step])
+            if self.game.move_player(self.genes[self.step]) == False:
+                self.status = GameStatus.PLAYER_LOST
+                return
+
             if self.game.status == GameStatus.ONGOING:
                 self.game.move_enemies()
             self.status = self.game.status

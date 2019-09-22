@@ -1,6 +1,6 @@
 import networkx as nx
 from copy import copy, deepcopy
-from constants import EMPTY_CELL, PLAYER_MOVABLE_CELLS, ENEMY_ANT, PLAYER_ON_EMPTY_CELL
+from constants import WALL, EMPTY_CELL, PLAYER_MOVABLE_CELLS, ENEMY_ANT, PLAYER_ON_EMPTY_CELL
 
 def encode_map(m):
     ret = ''
@@ -18,8 +18,17 @@ def decode_map(s, size):
     return ret
 
 def print_map(m):
+    pm = {
+        0: '.',
+        6: '#',
+        2: '*',
+        5: 'o',
+        3: '0',
+        1: 'X'
+    }
     for row in m:
-        print(row)
+        rww =''.join([pm[t] for t in row])
+        print(rww)
 
 def create_states_for_playerless_map(m, enemy_count=0):
     # player movements
@@ -78,7 +87,8 @@ def map_to_graph(m):
     for j in range(len(m)):
         for i in range(len(m[j])):
             cell = m[j][i]
-            if cell not in PLAYER_MOVABLE_CELLS + [ENEMY_ANT, PLAYER_ON_EMPTY_CELL]:
+            # if cell not in PLAYER_MOVABLE_CELLS + [ENEMY_ANT, PLAYER_ON_EMPTY_CELL]:
+            if cell == WALL:
                 G.remove_node((j, i))
     return G
 
