@@ -26,6 +26,7 @@ class Level:
             for i in range(self.width):
                 if self.level[j][i] in PLAYER_CONTAINER_CELLS:
                     return [j, i]
+        raise(Exception("No Player Found. Current map:", self.level))
 
     def get_enemy_positions(self):
         ret = []

@@ -8,6 +8,9 @@ def encode_map(m):
         ret = ret + ''.join([str(c) for c in r])
     return ret
 
+def encode_map_numeric(m):
+    return [float(k)/7.0 for k in encode_map(m)]
+
 def decode_map(s, size):
     ret = []
     for j in range(size):
@@ -19,12 +22,12 @@ def decode_map(s, size):
 
 def print_map(m):
     pm = {
-        0: '.',
-        6: '#',
-        2: '*',
+        0: '⬜️',
+        6: '🕷',
+        2: '●',
         5: 'o',
-        3: '0',
-        1: 'X'
+        3: '🏵',
+        1: '🔳'
     }
     for row in m:
         rww =''.join([pm[t] for t in row])
