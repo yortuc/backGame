@@ -1,12 +1,15 @@
 import networkx as nx
 from copy import copy, deepcopy
-from constants import EMPTY_CELL, PLAYER_MOVABLE_CELLS
+from constants import WALL, EMPTY_CELL, PLAYER_MOVABLE_CELLS, ENEMY_ANT, PLAYER_ON_EMPTY_CELL
 
 def encode_map(m):
     ret = ''
     for r in m:
         ret = ret + ''.join([str(c) for c in r])
     return ret
+
+def encode_map_numeric(m):
+    return [float(k)/7.0 for k in encode_map(m)]
 
 def decode_map(s, size):
     ret = []
@@ -18,8 +21,17 @@ def decode_map(s, size):
     return ret
 
 def print_map(m):
+    pm = {
+        0: '⬜️',
+        6: '🕷',
+        2: '●',
+        5: 'o',
+        3: '🏵',
+        1: '🔳'
+    }
     for row in m:
-        print(row)
+        rww =''.join([pm[t] for t in row])
+        print(rww)
 
 def create_states_for_playerless_map(m, enemy_count=0):
     # player movements
@@ -74,14 +86,12 @@ def clear_console_output():
 
 def map_to_graph(m):
     G = nx.grid_2d_graph(len(m), len(m), periodic=False, create_using=None)
-    
-    print(len(m))
 
     for j in range(len(m)):
         for i in range(len(m[j])):
             cell = m[j][i]
-            
-            if cell not in PLAYER_MOVABLE_CELLS:
+            # if cell not in PLAYER_MOVABLE_CELLS + [ENEMY_ANT, PLAYER_ON_EMPTY_CELL]:
+            if cell == WALL:
                 G.remove_node((j, i))
     return G
 
@@ -91,4 +101,6 @@ def euclidean_distance(a, b):
     return ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5
 
 def get_shortest_path(graph, source, target):
-    return nx.astar_path(graph, source, target, euclidean_distance)
+    source_tuple = (source[0], source[1])
+    target_tuple = (target[0], target[1])
+    return nx.astar_path(graph, source_tuple, target_tuple, euclidean_distance)

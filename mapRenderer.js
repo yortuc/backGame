@@ -86,7 +86,7 @@ const drawPlayer = (c, j, i, elapsedTime) => {
 
   if(isPlayerMoving){
     const dt = elapsedTime - playerMoveTime
-    const dx = dt * 0.4
+    const dx = dt * 0.8
     playerX = (playerMovedPos.x*CELL_SIZE + CELL_SIZE/2) + playerMoveDirection.x * dx
     playerY = (playerMovedPos.y*CELL_SIZE + CELL_SIZE/2) + playerMoveDirection.y * dx
     // playerR = (CELL_SIZE/2.5) - dx/3
